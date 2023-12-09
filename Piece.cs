@@ -39,24 +39,6 @@ namespace MinMaxXO
             Id = id;
             Player = player;
         }
-
-        /// <summary>
-        /// Returneaza lista tuturor mutarilor permise pentru piesa curenta (this)
-        /// in configuratia (tabla de joc) primita ca parametru
-        /// </summary>
-        public List<Move> ValidMoves(Board currentBoard)
-        {
-            List<Move> validMoves = new List<Move>();
-            for (int i = 0; i < 4; i++)
-                for (int j = 0; j < 4; j++)
-                {
-                    var move = new Move(i, j);
-                    if (IsValidMove(currentBoard, move))
-                        validMoves.Add(move);
-                }
-            return validMoves;
-        }
-
         /// <summary>
         /// Testeaza daca o mutare este valida intr-o anumita configuratie
         /// </summary>

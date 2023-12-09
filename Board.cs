@@ -68,16 +68,6 @@ namespace MinMaxXO
             nextBoard.AddPiece(move.NewX, move.NewY, PlayerType.Computer);
             return nextBoard;
         }
-
-        public void UndoMove(Move move)
-        {
-            var pieceToUndo = Pieces.LastOrDefault(p => p.X == move.NewX && p.Y == move.NewY);
-            if (pieceToUndo != null)
-            {
-                Pieces.Remove(pieceToUndo);
-            }
-        }
-
         /// <summary>
         /// Metoda care determina daca casuta este libera
         /// </summary>
@@ -116,7 +106,9 @@ namespace MinMaxXO
                 finished = true;
             }
         }
-
+        /// <summary>
+        /// Calculeaza functia care verifica ce player a castigat
+        /// </summary>
         private bool HasPlayerWon(PlayerType player)
         {
             var playerPieces = Pieces.Where(p => p.Player == player).ToList();
@@ -135,11 +127,9 @@ namespace MinMaxXO
 
             return false;
         }
-
         /// <summary>
         /// Calculeaza functia de evaluare statica pentru configuratia (tabla) curenta
         /// </summary>
-        /// 
         public int Evaluate()
         {
             int score = 0;
@@ -159,7 +149,9 @@ namespace MinMaxXO
 
             return score;
         }
-
+        /// <summary>
+        /// Calculeaza functia de evaluare statica pentru fiecare linie de pe tabla de jos
+        /// </summary>
         private int EvaluateLine(IEnumerable<Piece> line)
         {
             int playerCount = line.Count(p => p.Player == PlayerType.Computer);
@@ -172,7 +164,7 @@ namespace MinMaxXO
             else if (playerCount == Size - 1 && opponentCount == 0)
                 return 10; // Two in a row, with third cell empty
             else if (playerCount == 0 && opponentCount == Size - 1)
-                return -15; // Opponent has two in a row
+                return -15; // Opponent has two in a row, prioritize blocking winning move of opponent
             else
                 return 0; // Neutral or no advantage
         }
