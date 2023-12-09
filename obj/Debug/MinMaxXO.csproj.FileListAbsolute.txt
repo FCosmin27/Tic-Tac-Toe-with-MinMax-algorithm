@@ -1,0 +1,11 @@
+C:\Users\cosmi\Desktop\IA\proiect\obj\Debug\MinMaxXO.csproj.AssemblyReference.cache
+C:\Users\cosmi\Desktop\IA\proiect\obj\Debug\MinMaxXO.csproj.SuggestedBindingRedirects.cache
+C:\Users\cosmi\Desktop\IA\proiect\obj\Debug\MinMaxXO.MainForm.resources
+C:\Users\cosmi\Desktop\IA\proiect\obj\Debug\MinMaxXO.csproj.GenerateResource.cache
+C:\Users\cosmi\Desktop\IA\proiect\obj\Debug\MinMaxXO.csproj.CoreCompileInputs.cache
+C:\Users\cosmi\Desktop\IA\proiect\bin\Debug\MinMaxXO.exe.config
+C:\Users\cosmi\Desktop\IA\proiect\bin\Debug\MinMaxXO.exe
+C:\Users\cosmi\Desktop\IA\proiect\bin\Debug\MinMaxXO.pdb
+C:\Users\cosmi\Desktop\IA\proiect\obj\Debug\MinMaxXO.Properties.Resources.resources
+C:\Users\cosmi\Desktop\IA\proiect\obj\Debug\MinMaxXO.exe
+C:\Users\cosmi\Desktop\IA\proiect\obj\Debug\MinMaxXO.pdb
