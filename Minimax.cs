@@ -15,7 +15,6 @@ namespace MinMaxXO
         /// Primeste o configuratie ca parametru, cauta mutarea optima si returneaza configuratia
         /// care rezulta prin aplicarea acestei mutari optime
         /// </summary>
-
         public static Board FindNextBoard(Board currentBoard, int depth, double alpha, double beta)
         {
             // If it's the computer's first move, prioritize the center.
@@ -27,15 +26,25 @@ namespace MinMaxXO
                 return newBoard;
             }
 
+            // Check for an immediate winning move before evaluating other moves
+            if (currentBoard.HasImmediateWinningMove(out Move winningMove))
+            {
+                var winningBoard = currentBoard.MakeMove(winningMove);
+                winningBoard.Score = double.MaxValue; // Assign maximum score for a winning move
+                return winningBoard;
+            }
+
             return Maximize(currentBoard, depth, alpha, beta);
         }
-
+        /// <summary>
+        /// Selectează cea mai bună mutare a calculatorului prin maximizarea scorului.
+        /// </summary>
         private static Board Maximize(Board currentBoard, int depth, double alpha, double beta)
         {
             currentBoard.CheckFinish(out bool finished, out PlayerType winner);
             if (depth == 0 || finished)
             {
-                return new Board(currentBoard, currentBoard.Evaluate());
+                return new Board(currentBoard, currentBoard.EvaluationFunction());
             }
 
             double maxEval = double.MinValue;
@@ -56,14 +65,15 @@ namespace MinMaxXO
             }
             return bestBoard != null ? new Board(bestBoard, maxEval) : null;
         }
-
-
+        /// <summary>
+        /// Calculează scorul minim pentru adversar în algoritmul Minimax.
+        /// </summary>
         private static double MinValue(Board board, int depth, double alpha, double beta)
         {
             board.CheckFinish(out bool finished, out PlayerType winner);
             if (depth == 0 || finished)
             {
-                return board.Evaluate();
+                return board.EvaluationFunction();
             }
 
             double minEval = double.MaxValue;
@@ -79,14 +89,15 @@ namespace MinMaxXO
             }
             return minEval;
         }
-
-
+        /// <summary>
+        /// Obține scorul maxim posibil pentru calculator.
+        /// </summary>
         private static double MaxValue(Board board, int depth, double alpha, double beta)
         {
             board.CheckFinish(out bool finished, out PlayerType winner);
             if (depth == 0 || finished)
             {
-                return board.Evaluate();
+                return board.EvaluationFunction();
             }
 
             double maxEval = double.MinValue;
@@ -101,8 +112,9 @@ namespace MinMaxXO
             }
             return maxEval;
         }
-
-
+        /// <summary>
+        /// Generează lista tuturor mutărilor valide disponibile.
+        /// </summary>
         private static List<Move> GetAllValidMoves(Board board)
         {
             List<Move> validMoves = new List<Move>();
@@ -112,8 +124,5 @@ namespace MinMaxXO
                         validMoves.Add(new Move(x, y));
             return validMoves;
         }
-
     }
-
-
 }

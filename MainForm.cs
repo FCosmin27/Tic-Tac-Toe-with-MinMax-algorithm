@@ -111,7 +111,7 @@ namespace MinMaxXO
 
         private void ComputerMove()
         {
-            Board nextBoard = Minimax.FindNextBoard(_board, 2, double.MinValue, double.MaxValue);
+            Board nextBoard = Minimax.FindNextBoard(_board, 9 - _board.PieceCount, double.MinValue, double.MaxValue);
 
             _board = nextBoard;
             pictureBoxBoard.Refresh();
