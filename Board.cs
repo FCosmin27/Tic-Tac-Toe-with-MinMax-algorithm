@@ -211,7 +211,7 @@ namespace MinMaxXO
             int computerScore = 0;
             int humanScore = 0;
 
-            // Evaluate center control
+            // If it's the computer's first move, prioritize the center.
             if (!IsEmptyCell(1, 1))
             {
                 if (GetOccupant(1, 1) == PlayerType.Computer)
@@ -235,7 +235,6 @@ namespace MinMaxXO
 
             return (computerScore, humanScore);
         }
-
         /// <summary>
         /// Calcularea scorului pentru liniile ce ar putea fi considerate urmatoarea miscare
         /// </summary>
@@ -342,9 +341,6 @@ namespace MinMaxXO
             }
             return false;
         }
-
-        // Adjust the MakeMove method to accept the
-
         /// <summary>
         /// Returneaza type-ul player-ului ce ocupa casuta respectiva
         /// </summary>

@@ -9,23 +9,12 @@ namespace MinMaxXO
     /// </summary>
     public partial class Minimax
     {
-        private static Random _rand = new Random();
-
         /// <summary>
         /// Primeste o configuratie ca parametru, cauta mutarea optima si returneaza configuratia
         /// care rezulta prin aplicarea acestei mutari optime
         /// </summary>
         public static Board FindNextBoard(Board currentBoard, int depth, double alpha, double beta)
         {
-            // If it's the computer's first move, prioritize the center.
-            if (currentBoard.Pieces.Count == 0)
-            {
-                var centerMove = new Move(1, 1);
-                var newBoard = currentBoard.MakeMove(centerMove);
-                newBoard.Score = 100; // Arbitrary high score for center move
-                return newBoard;
-            }
-
             // Check for an immediate winning move before evaluating other moves
             if (currentBoard.HasImmediateWinningMove(PlayerType.Computer, out Move winningMove))
             {
