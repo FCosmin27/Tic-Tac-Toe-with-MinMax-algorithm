@@ -74,6 +74,15 @@ namespace MinMaxXO
             return nextBoard;
         }
         /// <summary>
+        /// Creeaza o noua configuratie aplicand mutarea si tipul jucatolui primiti ca parametrii in configuratia curenta
+        /// </summary>
+        public Board MakeMove(Move move, PlayerType player)
+        {
+            Board nextBoard = new Board(this); // Create a copy of the current board
+            nextBoard.AddPiece(move.NewX, move.NewY, player); // Make the move for the specified player
+            return nextBoard;
+        }
+        /// <summary>
         /// Metoda care determina daca casuta este libera
         /// </summary>
         public bool IsEmptyCell(int x, int y)
@@ -282,12 +291,6 @@ namespace MinMaxXO
                 humanScore += scores.human;
             }
 
-            // Additional logic to prioritize blocking opponent's immediate win
-            if (IsImmediateThreat())
-            {
-                computerScore += 100; // Arbitrary high score to reflect immediate blocking need
-            }
-
             return (computerScore, humanScore);
         }
         /// <summary>
@@ -312,38 +315,24 @@ namespace MinMaxXO
             return (0, 0);
         }
         /// <summary>
-        /// Actionare imediata prin blocare in cazul in care omul are o miscare castigatoare
+        /// Checks if there is an immediate win available for the specified player.
         /// </summary>
-        private bool IsImmediateThreat()
+        /// <param name="player">The player to check for a winning move.</param>
+        /// <param name="winningMove">The move that will lead to an immediate win.</param>
+        /// <returns>true if there is a winning move; otherwise, false.</returns>
+        public bool HasImmediateWinningMove(PlayerType player, out Move winningMove)
         {
-            foreach (var line in GetLines())
-            {
-                int humanCount = line.Count(p => p.Player == PlayerType.Human);
-                if (humanCount == Size - 1 && line.Any(p => p.Player != PlayerType.Human))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        /// <summary>
-        /// Actionare imediata a calculatorului atunci cand poate face o miscare castigatoare
-        /// </summary>
-        public bool HasImmediateWinningMove(out Move winningMove)
-        {
+            winningMove = null;
             for (int x = 0; x < Size; x++)
             {
                 for (int y = 0; y < Size; y++)
                 {
-                    // Check if the cell is empty
                     if (IsEmptyCell(x, y))
                     {
-                        // Temporarily make the move on the board
                         var tempMove = new Move(x, y);
-                        var tempBoard = MakeMove(tempMove);
+                        var tempBoard = MakeMove(tempMove, player);
 
-                        // Check if this move would win the game
-                        if (tempBoard.HasPlayerWon(PlayerType.Computer))
+                        if (tempBoard.HasPlayerWon(player))
                         {
                             winningMove = tempMove;
                             return true;
@@ -351,10 +340,11 @@ namespace MinMaxXO
                     }
                 }
             }
-
-            winningMove = null;
             return false;
         }
+
+        // Adjust the MakeMove method to accept the
+
         /// <summary>
         /// Returneaza type-ul player-ului ce ocupa casuta respectiva
         /// </summary>

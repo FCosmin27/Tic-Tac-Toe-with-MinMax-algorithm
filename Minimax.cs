@@ -27,11 +27,19 @@ namespace MinMaxXO
             }
 
             // Check for an immediate winning move before evaluating other moves
-            if (currentBoard.HasImmediateWinningMove(out Move winningMove))
+            if (currentBoard.HasImmediateWinningMove(PlayerType.Computer, out Move winningMove))
             {
                 var winningBoard = currentBoard.MakeMove(winningMove);
                 winningBoard.Score = double.MaxValue; // Assign maximum score for a winning move
                 return winningBoard;
+            }
+
+            // Check for an immediate threat and block it
+            if (currentBoard.HasImmediateWinningMove(PlayerType.Human, out Move blockingMove))
+            {
+                var blockingBoard = currentBoard.MakeMove(blockingMove);
+                blockingBoard.Score = double.MaxValue - 1; // High score for blocking an immediate threat
+                return blockingBoard;
             }
 
             return Maximize(currentBoard, depth, alpha, beta);
