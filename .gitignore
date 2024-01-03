@@ -1,0 +1,36 @@
+# Build Results
+[Bb]in/
+[Oo]bj/
+*.user
+*.userosscache
+*.suo
+*.userprefs
+*.pdb
+*.exe
+*.dll
+
+# MSTest test Results
+[TestR]esult*/
+[Bb]uild[Ll]og.*
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# Visual Studio files
+.vs/
+*.opendb
+*.dbmdl
+
+# Others
+*.cache
+*.csproj.files
+*.csproj.vspscc
+*.pidb
+*.svclog
+*.scc
+*.swp
+*~
+*.swp
+*.*swp

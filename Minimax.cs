@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static MinMaxXO.Board;
 
 namespace MinMaxXO
 {
@@ -41,7 +42,7 @@ namespace MinMaxXO
             currentBoard.CheckFinish(out bool finished, out PlayerType winner);
             if (depth == 0 || finished)
             {
-                return new Board(currentBoard, currentBoard.EvaluationFunction());
+                return new Board(currentBoard, currentBoard.EvaluationFunc(), currentBoard.EvaluationFunc);
             }
 
             double maxEval = double.MinValue;
@@ -60,7 +61,7 @@ namespace MinMaxXO
                 if (beta <= alpha)
                     break;
             }
-            return bestBoard != null ? new Board(bestBoard, maxEval) : null;
+            return bestBoard != null ? new Board(bestBoard, maxEval, bestBoard.EvaluationFunc) : null;
         }
         /// <summary>
         /// Calculează scorul minim pentru adversar în algoritmul Minimax.
@@ -70,7 +71,7 @@ namespace MinMaxXO
             board.CheckFinish(out bool finished, out PlayerType winner);
             if (depth == 0 || finished)
             {
-                return board.EvaluationFunction();
+                return board.EvaluationFunc();
             }
 
             double minEval = double.MaxValue;
@@ -94,7 +95,7 @@ namespace MinMaxXO
             board.CheckFinish(out bool finished, out PlayerType winner);
             if (depth == 0 || finished)
             {
-                return board.EvaluationFunction();
+                return board.EvaluationFunc();
             }
 
             double maxEval = double.MinValue;

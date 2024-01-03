@@ -32,6 +32,9 @@
             this.jocToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.jocNouToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.iesireToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dificultateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.usorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.greuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ajutorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.despreToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pictureBoxBoard = new System.Windows.Forms.PictureBox();
@@ -44,6 +47,7 @@
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.jocToolStripMenuItem,
+            this.dificultateToolStripMenuItem,
             this.ajutorToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -76,6 +80,29 @@
             this.iesireToolStripMenuItem.Text = "&Iesire";
             this.iesireToolStripMenuItem.Click += new System.EventHandler(this.iesireToolStripMenuItem_Click);
             // 
+            // dificultateToolStripMenuItem
+            // 
+            this.dificultateToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.usorToolStripMenuItem,
+            this.greuToolStripMenuItem});
+            this.dificultateToolStripMenuItem.Name = "dificultateToolStripMenuItem";
+            this.dificultateToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
+            this.dificultateToolStripMenuItem.Text = "Dificultate";
+            // 
+            // usorToolStripMenuItem
+            // 
+            this.usorToolStripMenuItem.Name = "usorToolStripMenuItem";
+            this.usorToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.usorToolStripMenuItem.Text = "Usor";
+            this.usorToolStripMenuItem.Click += new System.EventHandler(this.dificultateUsorToolStripMenuItem_Click);
+            // 
+            // greuToolStripMenuItem
+            // 
+            this.greuToolStripMenuItem.Name = "greuToolStripMenuItem";
+            this.greuToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.greuToolStripMenuItem.Text = "Greu";
+            this.greuToolStripMenuItem.Click += new System.EventHandler(this.dificultateGreuToolStripMenuItem_Click);
+            // 
             // ajutorToolStripMenuItem
             // 
             this.ajutorToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -95,7 +122,7 @@
             // pictureBoxBoard
             // 
             this.pictureBoxBoard.Location = new System.Drawing.Point(170, 50);
-            this.pictureBoxBoard.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBoxBoard.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBoxBoard.Name = "pictureBoxBoard";
             this.pictureBoxBoard.Size = new System.Drawing.Size(400, 400);
             this.pictureBoxBoard.TabIndex = 1;
@@ -114,9 +141,9 @@
             this.DoubleBuffered = true;
             this.ForeColor = System.Drawing.Color.White;
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "MainForm";
-            this.Text = "Dame simple";
+            this.Text = "X si 0 cu MinMax";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBoard)).EndInit();
@@ -134,6 +161,9 @@
         private System.Windows.Forms.PictureBox pictureBoxBoard;
         private System.Windows.Forms.ToolStripMenuItem ajutorToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem despreToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem dificultateToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem usorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem greuToolStripMenuItem;
     }
 }
 

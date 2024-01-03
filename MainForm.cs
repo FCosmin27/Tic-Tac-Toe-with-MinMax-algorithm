@@ -19,6 +19,7 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Forms;
+using static MinMaxXO.Board;
 
 namespace MinMaxXO
 {
@@ -149,14 +150,7 @@ namespace MinMaxXO
 
         private void jocNouToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
-            _board = new Board();
-            _currentPlayer = PlayerType.Computer;
-            _playerStarts = !_playerStarts;
-            _playerTurn = _playerStarts;
-            _gameOver = false;
-            if (!_playerStarts)
-                ComputerMove();
-            pictureBoxBoard.Invalidate();
+            JocNou();
         }
 
         private void despreToolStripMenuItem_Click(object sender, EventArgs e)
@@ -173,6 +167,30 @@ namespace MinMaxXO
         private void iesireToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
             Environment.Exit(0);
+        }
+
+        private void dificultateUsorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _board.EvaluationFunc = _board.EasyDifficultyEvaluationFunction;
+            JocNou();
+        }
+
+        private void dificultateGreuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            _board.EvaluationFunc = _board.HardDifficultyEvaluationFunction;
+            JocNou();
+        }
+
+        private void JocNou()
+        {
+            _board = new Board();
+            _currentPlayer = PlayerType.Computer;
+            _playerStarts = !_playerStarts;
+            _playerTurn = _playerStarts;
+            _gameOver = false;
+            if (!_playerStarts)
+                ComputerMove();
+            pictureBoxBoard.Invalidate();
         }
     }
 }

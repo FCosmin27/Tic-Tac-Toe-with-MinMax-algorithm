@@ -27,6 +27,9 @@ namespace MinMaxXO
         public int Size { get; set; } // dimensiunea tablei de joc
         public List<Piece> Pieces { get; set; } // lista de piese, atat ale omului cat si ale calculatorului
 
+        public delegate int EvaluationFunction();
+        public EvaluationFunction EvaluationFunc { get; set; }
+
         public int PieceCount
         {
             get { return Pieces.Count; }
@@ -38,6 +41,14 @@ namespace MinMaxXO
         {
             Size = 3;
             Pieces = new List<Piece>(Size * Size);
+            EvaluationFunc = EasyDifficultyEvaluationFunction;
+        }
+
+        public Board(EvaluationFunction function)
+        {
+            Size = 3;
+            Pieces = new List<Piece>(Size * Size);
+            EvaluationFunc = function;
         }
 
         public void AddPiece(int x, int y, PlayerType player)
@@ -49,15 +60,17 @@ namespace MinMaxXO
         {
             Size = b.Size;
             Pieces = new List<Piece>(Size * Size);
+            EvaluationFunc = b.EvaluationFunc;
 
             foreach (Piece p in b.Pieces)
                 Pieces.Add(new Piece(p.X, p.Y, p.Id, p.Player));
         }
 
-        public Board(Board b, double score)
+        public Board(Board b, double score, EvaluationFunction funcion)
         {
             Size = b.Size;
             Pieces = new List<Piece>(Size * Size);
+            EvaluationFunc = funcion;
 
             foreach (Piece p in b.Pieces)
                 Pieces.Add(new Piece(p.X, p.Y, p.Id, p.Player));
@@ -143,7 +156,7 @@ namespace MinMaxXO
         /// <summary>
         /// Calculeaza functia de evaluare statica pentru configuratia (tabla) curenta luand in considerare fiecare linie/diagonala
         /// </summary>
-        public int Evaluate()
+        public int EasyDifficultyEvaluationFunction()
         {
             int score = 0;
             for (int i = 0; i < Size; i++)
@@ -181,7 +194,7 @@ namespace MinMaxXO
         /// <summary>
         /// Calculeaza functia de evaluare statica pentru configuratia (tabla) curenta
         /// </summary>
-        public int EvaluationFunction()
+        public int HardDifficultyEvaluationFunction()
         {
             int computerScore = 0;
             int humanScore = 0;
