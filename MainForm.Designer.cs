@@ -69,14 +69,14 @@
             // jocNouToolStripMenuItem
             // 
             this.jocNouToolStripMenuItem.Name = "jocNouToolStripMenuItem";
-            this.jocNouToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
+            this.jocNouToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.jocNouToolStripMenuItem.Text = "Joc &nou";
             this.jocNouToolStripMenuItem.Click += new System.EventHandler(this.jocNouToolStripMenuItem_Click);
             // 
             // iesireToolStripMenuItem
             // 
             this.iesireToolStripMenuItem.Name = "iesireToolStripMenuItem";
-            this.iesireToolStripMenuItem.Size = new System.Drawing.Size(115, 22);
+            this.iesireToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
             this.iesireToolStripMenuItem.Text = "&Iesire";
             this.iesireToolStripMenuItem.Click += new System.EventHandler(this.iesireToolStripMenuItem_Click);
             // 
@@ -85,6 +85,7 @@
             this.dificultateToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.usorToolStripMenuItem,
             this.greuToolStripMenuItem});
+            this.dificultateToolStripMenuItem.ForeColor = System.Drawing.Color.Black;
             this.dificultateToolStripMenuItem.Name = "dificultateToolStripMenuItem";
             this.dificultateToolStripMenuItem.Size = new System.Drawing.Size(73, 20);
             this.dificultateToolStripMenuItem.Text = "Dificultate";

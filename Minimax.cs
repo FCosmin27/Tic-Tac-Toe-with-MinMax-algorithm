@@ -14,35 +14,12 @@ namespace MinMaxXO
         /// Primeste o configuratie ca parametru, cauta mutarea optima si returneaza configuratia
         /// care rezulta prin aplicarea acestei mutari optime
         /// </summary>
-        public static Board FindNextBoard(Board currentBoard, int depth, double alpha, double beta)
-        {
-            // Check for an immediate winning move before evaluating other moves
-            if (currentBoard.HasImmediateWinningMove(PlayerType.Computer, out Move winningMove))
-            {
-                var winningBoard = currentBoard.MakeMove(winningMove);
-                winningBoard.Score = double.MaxValue; // Assign maximum score for a winning move
-                return winningBoard;
-            }
-
-            // Check for an immediate threat and block it
-            if (currentBoard.HasImmediateWinningMove(PlayerType.Human, out Move blockingMove))
-            {
-                var blockingBoard = currentBoard.MakeMove(blockingMove);
-                blockingBoard.Score = double.MaxValue - 1; // High score for blocking an immediate threat
-                return blockingBoard;
-            }
-
-            return Maximize(currentBoard, depth, alpha, beta);
-        }
-        /// <summary>
-        /// Selectează cea mai bună mutare a calculatorului prin maximizarea scorului.
-        /// </summary>
-        private static Board Maximize(Board currentBoard, int depth, double alpha, double beta)
+        public static Board FindNextBoard(Board currentBoard, int depth, double alpha, double beta, EvaluationFunction evaluationFunc)
         {
             currentBoard.CheckFinish(out bool finished, out PlayerType winner);
             if (depth == 0 || finished)
             {
-                return new Board(currentBoard, currentBoard.EvaluationFunc(), currentBoard.EvaluationFunc);
+                return new Board(currentBoard, evaluationFunc(currentBoard));
             }
 
             double maxEval = double.MinValue;
@@ -50,8 +27,8 @@ namespace MinMaxXO
 
             foreach (var move in GetAllValidMoves(currentBoard))
             {
-                Board newBoard = currentBoard.MakeMove(move);
-                double eval = MinValue(newBoard, depth - 1, alpha, beta);
+                Board newBoard = currentBoard.MakeMove(move, PlayerType.Computer);
+                double eval = MinValue(newBoard, depth - 1, alpha, beta, evaluationFunc);
                 if (eval > maxEval)
                 {
                     maxEval = eval;
@@ -61,24 +38,24 @@ namespace MinMaxXO
                 if (beta <= alpha)
                     break;
             }
-            return bestBoard != null ? new Board(bestBoard, maxEval, bestBoard.EvaluationFunc) : null;
+            return bestBoard != null ? new Board(bestBoard, maxEval) : null;
         }
         /// <summary>
         /// Calculează scorul minim pentru adversar în algoritmul Minimax.
         /// </summary>
-        private static double MinValue(Board board, int depth, double alpha, double beta)
+        private static double MinValue(Board board, int depth, double alpha, double beta, EvaluationFunction evaluationFunc)
         {
             board.CheckFinish(out bool finished, out PlayerType winner);
             if (depth == 0 || finished)
             {
-                return board.EvaluationFunc();
+                return evaluationFunc(board);
             }
 
             double minEval = double.MaxValue;
             foreach (var move in GetAllValidMoves(board))
             {
-                Board newBoard = board.MakeMove(move);
-                double eval = MaxValue(newBoard, depth - 1, alpha, beta); // Recursive call to MaxValue
+                Board newBoard = board.MakeMove(move, PlayerType.Human);
+                double eval = MaxValue(newBoard, depth - 1, alpha, beta, evaluationFunc); // Recursive call to MaxValue
 
                 minEval = Math.Min(minEval, eval);
                 beta = Math.Min(beta, eval);
@@ -90,19 +67,19 @@ namespace MinMaxXO
         /// <summary>
         /// Obține scorul maxim posibil pentru calculator.
         /// </summary>
-        private static double MaxValue(Board board, int depth, double alpha, double beta)
+        private static double MaxValue(Board board, int depth, double alpha, double beta, EvaluationFunction evaluationFunc)
         {
             board.CheckFinish(out bool finished, out PlayerType winner);
             if (depth == 0 || finished)
             {
-                return board.EvaluationFunc();
+                return evaluationFunc(board);
             }
 
             double maxEval = double.MinValue;
             foreach (var move in GetAllValidMoves(board))
             {
-                Board newBoard = board.MakeMove(move);
-                double eval = MinValue(newBoard, depth - 1, alpha, beta);
+                Board newBoard = board.MakeMove(move, PlayerType.Computer);
+                double eval = MinValue(newBoard, depth - 1, alpha, beta, evaluationFunc);
                 maxEval = Math.Max(maxEval, eval);
                 alpha = Math.Max(alpha, eval);
                 if (beta <= alpha)

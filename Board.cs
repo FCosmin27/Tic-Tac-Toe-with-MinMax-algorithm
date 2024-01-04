@@ -27,83 +27,64 @@ namespace MinMaxXO
         public int Size { get; set; } // dimensiunea tablei de joc
         public List<Piece> Pieces { get; set; } // lista de piese, atat ale omului cat si ale calculatorului
 
-        public delegate int EvaluationFunction();
-        public EvaluationFunction EvaluationFunc { get; set; }
+        public delegate int EvaluationFunction(Board board);
 
         public int PieceCount
         {
             get { return Pieces.Count; }
         }
 
-        public double Score { get; set; }
-
         public Board()
         {
             Size = 3;
             Pieces = new List<Piece>(Size * Size);
-            EvaluationFunc = EasyDifficultyEvaluationFunction;
-        }
-
-        public Board(EvaluationFunction function)
-        {
-            Size = 3;
-            Pieces = new List<Piece>(Size * Size);
-            EvaluationFunc = function;
-        }
-
-        public void AddPiece(int x, int y, PlayerType player)
-        {
-            Pieces.Add(new Piece(x, y, Pieces.Count, player));
         }
 
         public Board(Board b)
         {
             Size = b.Size;
             Pieces = new List<Piece>(Size * Size);
-            EvaluationFunc = b.EvaluationFunc;
 
             foreach (Piece p in b.Pieces)
                 Pieces.Add(new Piece(p.X, p.Y, p.Id, p.Player));
         }
 
-        public Board(Board b, double score, EvaluationFunction funcion)
+        public Board(Board b, double score)
         {
             Size = b.Size;
             Pieces = new List<Piece>(Size * Size);
-            EvaluationFunc = funcion;
 
             foreach (Piece p in b.Pieces)
                 Pieces.Add(new Piece(p.X, p.Y, p.Id, p.Player));
-
-            Score = score;
         }
-        /// <summary>
-        /// Creeaza o noua configuratie aplicand mutarea primita ca parametru in configuratia curenta
-        /// </summary>
-        public Board MakeMove(Move move)
+
+        public void AddPiece(int x, int y, PlayerType player)
         {
-            Board nextBoard = new Board(this); // copy
-            nextBoard.AddPiece(move.NewX, move.NewY, PlayerType.Computer);
-            return nextBoard;
+            Pieces.Add(new Piece(x, y, Pieces.Count, player));
         }
         /// <summary>
         /// Creeaza o noua configuratie aplicand mutarea si tipul jucatolui primiti ca parametrii in configuratia curenta
         /// </summary>
         public Board MakeMove(Move move, PlayerType player)
         {
-            Board nextBoard = new Board(this); // Create a copy of the current board
-            nextBoard.AddPiece(move.NewX, move.NewY, player); // Make the move for the specified player
+            Board nextBoard = new Board(this);
+            nextBoard.Pieces = new List<Piece>(Pieces);// Create a copy of the current board
+            nextBoard.Pieces.Add(new Piece (move.NewX, move.NewY, Pieces.Count, player )); // Make the move for the specified player
             return nextBoard;
         }
         /// <summary>
         /// Metoda care determina daca casuta este libera
         /// </summary>
+        public bool IsEmptyCell(Board board, int x, int y)
+        {
+            // Check if there is any piece in the specified cell
+            return !board.Pieces.Any(p => p.X == x && p.Y == y);
+        }
         public bool IsEmptyCell(int x, int y)
         {
             // Check if there is any piece in the specified cell
             return !Pieces.Any(p => p.X == x && p.Y == y);
         }
-
         /// <summary>
         /// Verifica daca configuratia curenta este castigatoare
         /// </summary>
@@ -156,20 +137,20 @@ namespace MinMaxXO
         /// <summary>
         /// Calculeaza functia de evaluare statica pentru configuratia (tabla) curenta luand in considerare fiecare linie/diagonala
         /// </summary>
-        public int EasyDifficultyEvaluationFunction()
+        public int EasyDifficultyEvaluationFunction(Board board)
         {
             int score = 0;
-            for (int i = 0; i < Size; i++)
+            for (int i = 0; i < board.Size; i++)
             {
                 // Evaluate rows
-                score += EvaluateLine(Pieces.Where(p => p.X == i));
+                score += EvaluateLine(board.Pieces.Where(p => p.X == i));
                 // Evaluate columns
-                score += EvaluateLine(Pieces.Where(p => p.Y == i));
+                score += EvaluateLine(board.Pieces.Where(p => p.Y == i));
             }
 
             // Evaluate diagonals
-            score += EvaluateLine(Pieces.Where(p => p.X == p.Y));
-            score += EvaluateLine(Pieces.Where(p => p.X + p.Y == Size - 1));
+            score += EvaluateLine(board.Pieces.Where(p => p.X == p.Y));
+            score += EvaluateLine(board.Pieces.Where(p => p.X + p.Y == board.Size - 1));
             return score;
         }
         /// <summary>
@@ -194,21 +175,21 @@ namespace MinMaxXO
         /// <summary>
         /// Calculeaza functia de evaluare statica pentru configuratia (tabla) curenta
         /// </summary>
-        public int HardDifficultyEvaluationFunction()
+        public int HardDifficultyEvaluationFunction(Board board)
         {
             int computerScore = 0;
             int humanScore = 0;
 
             // Evaluate control of strategic positions
-            var strategicScores = EvaluateStrategicPositions();
+            var strategicScores = EvaluateStrategicPositions(board);
             computerScore += strategicScores.computer;
             humanScore += strategicScores.human;
 
-            var potentialLineScores = EvaluatePotentialWinningLines();
+            var potentialLineScores = EvaluatePotentialWinningLines(board);
             computerScore += potentialLineScores.computer;
             humanScore += potentialLineScores.human;
 
-            var blockingScores = EvaluateBlockingAndThreats();
+            var blockingScores = EvaluateBlockingAndThreats(board);
             computerScore += blockingScores.computer;
             humanScore += blockingScores.human;
 
@@ -219,15 +200,15 @@ namespace MinMaxXO
         /// <summary>
         /// Verificararea centrului sau a colturilor pentru o potentiala miscare 
         /// </summary>
-        private (int computer, int human) EvaluateStrategicPositions()
+        private (int computer, int human) EvaluateStrategicPositions(Board board)
         {
             int computerScore = 0;
             int humanScore = 0;
 
             // If it's the computer's first move, prioritize the center.
-            if (!IsEmptyCell(1, 1))
+            if (!IsEmptyCell(board, 1, 1))
             {
-                if (GetOccupant(1, 1) == PlayerType.Computer)
+                if (GetOccupant(board, 1, 1) == PlayerType.Computer)
                     computerScore += 10;
                 else
                     humanScore += 10;
@@ -237,9 +218,9 @@ namespace MinMaxXO
             var corners = new List<(int, int)> { (0, 0), (0, 2), (2, 0), (2, 2) };
             foreach (var corner in corners)
             {
-                if (!IsEmptyCell(corner.Item1, corner.Item2))
+                if (!IsEmptyCell(board, corner.Item1, corner.Item2))
                 {
-                    if (GetOccupant(corner.Item1, corner.Item2) == PlayerType.Computer)
+                    if (GetOccupant(board, corner.Item1, corner.Item2) == PlayerType.Computer)
                         computerScore += 3;
                     else
                         humanScore += 3;
@@ -251,13 +232,12 @@ namespace MinMaxXO
         /// <summary>
         /// Calcularea scorului pentru liniile ce ar putea fi considerate urmatoarea miscare
         /// </summary>
-        private (int computer, int human) EvaluatePotentialWinningLines()
+        private (int computer, int human) EvaluatePotentialWinningLines(Board board)
         {
             int computerScore = 0;
             int humanScore = 0;
 
-            // Modified EvaluatePotentialLine to return a tuple
-            foreach (var line in GetLines())
+            foreach (var line in GetLines(board))
             {
                 var scores = EvaluatePotentialLine(line);
                 computerScore += scores.computer;
@@ -291,12 +271,12 @@ namespace MinMaxXO
         /// <summary>
         /// Verificarea tuturor liniilor pentru a scoate in evidenta posibile avantaje ale oponentului
         /// </summary>
-        private (int computer, int human) EvaluateBlockingAndThreats()
+        private (int computer, int human) EvaluateBlockingAndThreats(Board board)
         {
             int computerScore = 0;
             int humanScore = 0;
 
-            foreach (var line in GetLines())
+            foreach (var line in GetLines(board))
             {
                 var scores = EvaluateBlockingLine(line);
                 computerScore += scores.computer;
@@ -357,33 +337,33 @@ namespace MinMaxXO
         /// <summary>
         /// Returneaza type-ul player-ului ce ocupa casuta respectiva
         /// </summary>
-        public PlayerType? GetOccupant(int x, int y)
+        public PlayerType? GetOccupant(Board board, int x, int y)
         {
-            var piece = Pieces.FirstOrDefault(p => p.X == x && p.Y == y);
+            var piece = board.Pieces.FirstOrDefault(p => p.X == x && p.Y == y);
             return piece != null ? (PlayerType?)piece.Player : null;
         }
         /// <summary>
         /// Returneaza toate liniile
         /// </summary>
-        private IEnumerable<IEnumerable<Piece>> GetLines()
+        private IEnumerable<IEnumerable<Piece>> GetLines(Board board)
         {
             // Rows
             for (int i = 0; i < Size; i++)
             {
-                yield return Pieces.Where(p => p.X == i);
+                yield return board.Pieces.Where(p => p.X == i);
             }
 
             // Columns
             for (int i = 0; i < Size; i++)
             {
-                yield return Pieces.Where(p => p.Y == i);
+                yield return board.Pieces.Where(p => p.Y == i);
             }
 
             // Main diagonal
-            yield return Pieces.Where(p => p.X == p.Y);
+            yield return board.Pieces.Where(p => p.X == p.Y);
 
             // Anti-diagonal
-            yield return Pieces.Where(p => p.X + p.Y == Size - 1);
+            yield return board.Pieces.Where(p => p.X + p.Y == Size - 1);
         }
 
     }

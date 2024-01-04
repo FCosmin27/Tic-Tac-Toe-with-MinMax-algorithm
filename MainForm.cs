@@ -37,6 +37,7 @@ namespace MinMaxXO
         private bool _playerStarts;
         private bool _playerTurn;
         private bool _gameOver;
+        private EvaluationFunction _evaluationFunction;
 
         public MainForm()
         {
@@ -59,6 +60,7 @@ namespace MinMaxXO
             _playerStarts = true;
             _playerTurn = true;
             _gameOver = false;
+            _evaluationFunction = _board.EasyDifficultyEvaluationFunction;
 
             this.ClientSize = new System.Drawing.Size(927, 600);
             this.pictureBoxBoard.Size = new System.Drawing.Size(SQUARE_DIM, SQUARE_DIM);
@@ -112,7 +114,7 @@ namespace MinMaxXO
 
         private void ComputerMove()
         {
-            Board nextBoard = Minimax.FindNextBoard(_board, 9 - _board.PieceCount, double.MinValue, double.MaxValue);
+            Board nextBoard = Minimax.FindNextBoard(_board, 9 - _board.PieceCount, double.MinValue, double.MaxValue, _evaluationFunction);
 
             _board = nextBoard;
             pictureBoxBoard.Refresh();
@@ -150,7 +152,7 @@ namespace MinMaxXO
 
         private void jocNouToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
-            JocNou();
+            JocNou(_evaluationFunction);
         }
 
         private void despreToolStripMenuItem_Click(object sender, EventArgs e)
@@ -171,19 +173,18 @@ namespace MinMaxXO
 
         private void dificultateUsorToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _board.EvaluationFunc = _board.EasyDifficultyEvaluationFunction;
-            JocNou();
+            JocNou(_board.EasyDifficultyEvaluationFunction);
         }
 
         private void dificultateGreuToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _board.EvaluationFunc = _board.HardDifficultyEvaluationFunction;
-            JocNou();
+            JocNou(_board.HardDifficultyEvaluationFunction);
         }
 
-        private void JocNou()
+        private void JocNou(EvaluationFunction evaluationFunction)
         {
             _board = new Board();
+            _evaluationFunction = evaluationFunction;
             _currentPlayer = PlayerType.Computer;
             _playerStarts = !_playerStarts;
             _playerTurn = _playerStarts;
