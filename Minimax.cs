@@ -43,7 +43,7 @@ namespace MinMaxXO
         /// <summary>
         /// Calculează scorul minim pentru adversar în algoritmul Minimax.
         /// </summary>
-        private static double MinValue(Board board, int depth, double alpha, double beta, EvaluationFunction evaluationFunc)
+        public static double MinValue(Board board, int depth, double alpha, double beta, EvaluationFunction evaluationFunc)
         {
             board.CheckFinish(out bool finished, out PlayerType winner);
             if (depth == 0 || finished)
@@ -67,7 +67,7 @@ namespace MinMaxXO
         /// <summary>
         /// Obține scorul maxim posibil pentru calculator.
         /// </summary>
-        private static double MaxValue(Board board, int depth, double alpha, double beta, EvaluationFunction evaluationFunc)
+        public static double MaxValue(Board board, int depth, double alpha, double beta, EvaluationFunction evaluationFunc)
         {
             board.CheckFinish(out bool finished, out PlayerType winner);
             if (depth == 0 || finished)
